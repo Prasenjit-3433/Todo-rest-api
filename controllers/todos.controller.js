@@ -36,9 +36,42 @@ async function addTodo(req, res, next) {
     });
 }
 
-function updateTodo(req, res, next) {}
+async function updateTodo(req, res, next) {
+    const todoId = req.params.id;
+    const newTodoText = req.body.newText;
 
-function deleteTodo(req, res, next) {}
+    const todo = new Todo(newTodoText, todoId);
+
+    let result;
+    try {
+        result = await todo.save();
+    } catch (error) {
+        return next(error);
+    }
+
+    res.json({
+        message: 'Todo updated successfully!',
+        updateTodo: todo
+    });
+}
+
+async function deleteTodo(req, res, next) {
+    const todoId = req.params.id;
+
+    // Passing `null` object as arg for text:
+    const todo = new Todo(null, todoId);
+
+    let result;
+    try {
+        result = await todo.delete();
+    } catch (error) {
+        return next(error);
+    }
+
+    res.json({
+        message: 'Todo deleted successfully!'
+    });
+}
 
 module.exports = {
     getAllTodos: getAllTodos,
